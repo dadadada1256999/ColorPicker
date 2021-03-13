@@ -32,12 +32,13 @@ a {
 
 /* == CIRCLE =========================================================== */
 
+
 .circle-changer{
   padding : 20px;
   display: grid;
   grid-template: 
-  "left-bar top bottom-right" 300px
-  "left-bar bottom-left bottom-right" 100px
+  "left-bar top right" 90%
+  "left-bar bottom right" 10%
   /20% 50% 30%;
 }
 
@@ -72,18 +73,19 @@ a {
 /* === BAR ================================================================= */
 .side-bar{
   grid-area: left-bar;
-  overflow: auto;
   width: auto;
 	height: auto;
-	border: 2px solid #ccc;
 }
 
 /* === RANGE ================================================================= */
 .range {
-  grid-area: bottom-left;
-  margin:auto;
+  grid-area: bottom;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 10%;
   width: 50%;
 }
+
 
 /* === Box ================================================================= */
 
@@ -93,8 +95,12 @@ div .color-box {
   
 }
 
+div .color-doc-area{
+  grid-area :right;
+}
+
 .color-doc{
-  grid-area :bottom-right;
+  
   font-family: Meiryo;
   font-style: normal;
   font-weight: normal;
@@ -104,7 +110,6 @@ div .color-box {
 }
 
 .color-doc-box{
-  grid-area : top-right;
   margin:auto;
   vertical-align : middle;
   height: 300px;

@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState} from 'react';
 import ColorBlock from './ColorBlock';
 import Slider from '@material-ui/core/Slider';
 import getUserAgent from './getUserAgent';
-import {ThemeProvider} from '@material-ui/styles';
-import Button from '@material-ui/core/Button';
-import { Theme, makeStyles, createStyles } from '@material-ui/core/styles';
 import pccmtoan from './color.json';
-import theme from './thema';
+import { ProSidebar, Menu, MenuItem} from 'react-pro-sidebar';
+import 'react-pro-sidebar/dist/css/styles.css';
+import { ColorCircle } from './ColorCircle';
 
 /**TOAN ALL
  * PCCSトーンの一覧を決定する
@@ -26,33 +25,18 @@ const TOANALL : string[] = [
   "DARKGRAYISH"
 ];
 
+type IRangeProps = {
+
+};
 
 
-/**
- * レスポンシブ用スタイル決定
- */
-const useStyles = makeStyles((theme: Theme) =>
-createStyles({
-  root: {
-    [theme.breakpoints.down('sm')]: {
-      width : 20,
-    },
-    [theme.breakpoints.up('md')]: {
-      width : 60,
-    },
-    [theme.breakpoints.up('lg')]: {
-      width : 80,
-    },
-  },
-}),
-);
 
 /**
  * RangeInput : 表示する色を決定するレンジを作る
  * @param nonting
  * @returns render()
  */
-export const RangeInput  =  () =>
+export const RangeInput :React.FC<IRangeProps> =  () =>
 
 {
     /*Stateの定義 */
@@ -80,10 +64,13 @@ export const RangeInput  =  () =>
     const circleRef = useRef<HTMLDivElement>(null);
 
     useEffect(() =>{
+        const r_window = circleRef.current?.clientWidth! > circleRef.current?.clientHeight! 
+                        ? circleRef.current?.clientHeight! 
+                        : circleRef.current?.clientWidth! ; 
         setPosition({
             height : circleRef.current?.clientHeight! / 2,
             weight : circleRef.current?.clientWidth! / 2,
-            r : circleRef.current?.clientWidth! / 4
+            r : r_window / 2
         }) 
     },[]);
     
@@ -119,10 +106,11 @@ export const RangeInput  =  () =>
 
     function handleMouseOver(color : string)
     {
+        console.log("a");
         setMouseColor(color);
     }
 
-    function handleChange(event : any,newValue :number | number[])
+    function handleChange(event :React.ChangeEvent<{}>,newValue :number | number[])
     {
         setRange(newValue as number);
     }
@@ -141,41 +129,34 @@ export const RangeInput  =  () =>
     const na =  getUserAgent(window.navigator.userAgent.toLowerCase());
 
     
-  
-    const classes = useStyles();
     /*rendering */
     return (
         <div className="circle-changer">
+                <div className="side-bar">
+                    <h3>トーン一覧</h3>
+                    <ProSidebar>
+                        <Menu iconShape="square">
+                            {
+                                Object.entries(color_doc_list).map((value,index) =>{
+                                return(
+                                    <MenuItem key={index} onClick={() => setToan(value[0])}>{value[0]}</MenuItem>
+                                );
+                                })
+                            }
+                        </Menu>
+                    </ProSidebar> 
+                </div>
                 
-                <section className="side-bar">
-                    {
-                        Object.entries(color_doc_list).map((value,index) =>{
-                        return(
-                            <div key={index} className={classes.root}>
-                            <ThemeProvider key={index} theme={theme}>
-                                <Button  className="toan" size="large"  key={index}  onClick={() => setToan(value[0])}>
-                                {value[0]}
-                                </Button>
-                                <h2>{value[1]}</h2>
-                            </ThemeProvider>
-                            </div>
-                        );
-                        })
-                    }
-                </section>
+
+                
             <div className="Color-circle" ref={circleRef}>
-                {items.map((item,index) => {
-                    return(
-                    
-                    <ColorBlock key={index}  
-                                onMouseOver={() => handleMouseOver(item)}
-                                range={Range} 
-                                color = {item} 
-                                x={Math.cos(red * index) * position.r + position.weight} 
-                                y={Math.sin(red * index) * position.r + position.height}
-                    />
-                    );
-                })}
+                <ColorCircle   
+                                MouseOver={(color : string) => handleMouseOver(color)}
+                                items = {items} 
+                                red = {red}
+                                range = {Range}
+                                position = {position}
+                />
             </div>
 
             <div className="range"> 
@@ -183,13 +164,14 @@ export const RangeInput  =  () =>
                         value={Range} 
                         min = {20}
                         max = {120}
-                        onChange={handleChange} 
+                        onChange={handleChange}
+                        style={{bottom:0}}
                         valueLabelDisplay="auto" 
                         aria-labelledby="range-slider" />
             </div>
             {
                 na === 'pc' ?(
-                    <div>
+                    <div className="color-doc-area">
                         <div className="color-doc-box" style={{background : mouse_color}}></div>
                             <div className="color-doc">
                                 <h3>RGB : {mouse_color}</h3>
