@@ -9,9 +9,9 @@ React Reduxを勉強するためにPCCSトーンと呼ばれる色相環を表�
 
 # 開発方法
 
-'''Bush
+```Bush
   git pull origin master
   cd ColorPicker
   npm install 
   npm start
-'''
+```
